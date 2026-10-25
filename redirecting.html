@@ -1,0 +1,66 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loading...</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #0d0d0d;
+      color: white;
+      font-family: Arial, sans-serif;
+      flex-direction: column;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      margin-top: 20px;
+    }
+
+    /* Spinner Animation */
+    .loader {
+      border: 6px solid rgba(255, 255, 255, 0.1);
+      border-top: 6px solid #2b72ff;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Optional countdown */
+    #countdown {
+      margin-top: 10px;
+      font-size: 1rem;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+  <div class="loader"></div>
+  <h2>Loading, please wait...</h2>
+  <div id="countdown">Connecting in 5 seconds...</div>
+
+  <script>
+    let timeLeft = 4; // seconds
+    const countdownEl = document.getElementById("countdown");
+
+    const countdown = setInterval(() => {
+      timeLeft--;
+      countdownEl.textContent = `Connecting in ${timeLeft} seconds...`;
+      if (timeLeft <= 0) {
+        clearInterval(countdown);
+        window.location.href = "import.html"; // <-- Change to your target page
+      }
+    }, 1000);
+  </script>
+</body>
+</html>
