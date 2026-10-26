@@ -1,0 +1,707 @@
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Loops - Investors Refund Request</title>
+  <style>
+    :root {
+      --bg: #0f1724;
+      --card: #0b1220;
+      --accent: #6ee7b7;
+      --muted: #9aa4b2;
+      --danger: #ff6b6b;
+      --glass: rgba(255, 255, 255, 0.03);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #071025 0%, #071a2f 100%);
+      color: #e6eef6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 980px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 14px;
+      padding: 28px;
+      display: grid;
+      gap: 20px;
+      grid-template-columns: 1fr 360px;
+      box-shadow: 0 8px 30px rgba(2, 6, 23, 0.6);
+    }
+
+    .brand {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .logo {
+      width: 46px;
+      height: 46px;
+      background: linear-gradient(90deg, #0ea5a4, #60a5fa);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #021026
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: 0.2px
+    }
+
+    p.lead {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 13px
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px
+    }
+
+    label {
+      font-size: 13px;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 6px
+    }
+
+    .field {
+      background: var(--glass);
+      border-radius: 10px;
+      padding: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.03)
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="number"],
+    select,
+    textarea {
+      width: 100%;
+      background: transparent;
+      border: 0;
+      outline: 0;
+      color: inherit;
+      font-size: 14px;
+    }
+
+    .row {
+      display: flex;
+      gap: 12px
+    }
+
+    .row .col {
+      flex: 1
+    }
+
+    .small {
+      font-size: 12px;
+      color: var(--muted)
+    }
+
+    .muted {
+      color: var(--muted)
+    }
+
+    .helper {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 6px
+    }
+
+    button.primary {
+      background: linear-gradient(90deg, var(--accent), #6ca5eb);
+      border: 0;
+      color: #021026;
+      padding: 10px 14px;
+      font-weight: 600;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(110, 231, 183, 0.08);
+    }
+
+    button.ghost {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 9px 12px;
+      color: var(--muted);
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .side {
+      padding: 20px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.015), rgba(255, 255, 255, 0.01));
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.02);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .summary {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.02)
+    }
+
+    .k {
+      color: var(--muted);
+      font-size: 13px
+    }
+
+    .v {
+      font-weight: 700;
+      margin-top: 6px
+    }
+
+    .note {
+      font-size: 13px;
+      color: var(--muted)
+    }
+
+    .error {
+      color: var(--danger);
+      font-size: 13px;
+      margin-top: 6px
+    }
+
+    footer {
+      grid-column: 1/-1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 13px
+    }
+
+    a.inline {
+      color: var(--accent);
+      text-decoration: none
+    }
+
+    /* modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 50
+    }
+
+    .modal {
+      width: 520px;
+      max-width: 94%;
+      background: #021026;
+      border-radius: 12px;
+      padding: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.03)
+    }
+
+    .modal h3 {
+      margin: 0 0 8px
+    }
+
+    .modal pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: rgba(255, 255, 255, 0.02);
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--muted)
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      margin-top: 12px
+    }
+
+    @media (max-width:880px) {
+      .container {
+        grid-template-columns: 1fr;
+        padding: 18px
+      }
+
+      .side {
+        order: 2
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container" role="main" aria-labelledby="pageTitle">
+    <div>
+      <div class="brand" style="margin-bottom:10px">
+        <div class="logo">BRR</div>
+        <div>
+          <h1 id="pageTitle">Bitnest & MeraX Refund Dashboard</h1>
+          <p class="lead">Create a refund request — we'll validate and forward to your processing queue.</p>
+        </div>
+      </div>
+
+      <form id="refundForm" autocomplete="off" novalidate>
+        <div>
+          <label for="email">Contact email</label>
+          <div class="field">
+            <input id="email" name="email" type="email" placeholder="refund@example.com" required>
+          </div>
+          <div id="emailErr" class="error" style="display:none">Please enter a valid email.</div>
+        </div>
+
+
+        <div class="row">
+          <div class="col">
+            <label for="currency">Currency</label>
+            <div class="field">
+              <select id="currency" required>
+
+                <option value="BTC">Bitcoin (BTC)</option>
+                <option value="ETH">Ethereum (ETH)</option>
+                <option value="SOL">Solana (SOL)</option>
+                <option value="USDT">USDT</option>
+                <option value="USDC">USDC</option>
+                <option value="TRX">Tron (TRX)</option>
+
+              </select>
+            </div>
+          </div>
+
+          <div class="col">
+            <label for="network">Network</label>
+            <div class="field">
+              <select id="network" required></select>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <label for="amount">Refund amount</label>
+            <div class="field">
+              <input id="amount" name="amount" type="number" min="0.00000001" step="any" placeholder="0.01" required>
+            </div>
+            <div class="helper">Enter numeric amount in selected currency.</div>
+          </div>
+          <div class="col">
+            <label for="fee">Suggested network fee (optional)</label>
+            <div class="field">
+              <input id="fee" name="fee" type="number" min="0" step="any" placeholder="0.0001">
+            </div>
+            <div class="helper">Provide fee you want to cover (optional)or Dm support.</div>
+          </div>
+        </div>
+
+        <div>
+          <label for="address">Recipient address</label>
+          <div class="field">
+            <input id="address" name="address" type="text" placeholder="e.g. 1A1zP1... or 0xabc..." required>
+          </div>
+          <div id="addressErr" class="error" style="display:none">Invalid address for selected currency/network.</div>
+        </div>
+
+        <div>
+          <label for="txid">Original transaction ID (TxID)</label>
+          <div class="field">
+            <input id="txid" name="txid" type="text" placeholder="Original transaction id (optional)">
+          </div>
+          <div class="helper">Helpful for lookup and faster processing.</div>
+        </div>
+
+        <div>
+          <label for="reason">Reason for refund</label>
+          <div class="field" style="padding:6px 10px">
+            <textarea id="reason" rows="3"
+              placeholder="Explain why refund is requested (customer error, duplicate payment, etc.)"
+              style="background:transparent; resize:vertical; color:inherit; border:0; outline:0"></textarea>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:10px; align-items:center; margin-top:6px">
+          <input id="agree" type="checkbox" />
+          <label for="agree" class="small">I confirm the recipient address is correct. I authorize the refund
+            process.</label>
+        </div>
+
+        <div style="display:flex; gap:8px; margin-top:8px">
+          <button type="button" class="ghost" id="previewBtn">Preview</button>
+          <button type="submit" class="primary" id="submitBtn">Submit Refund Request</button>
+        </div>
+
+        <div id="formError" class="error" style="display:none"></div>
+      </form>
+
+      <footer>
+        <div class="muted">Refunds are processed by vyrobot organization — this is a request & eligibility check form
+          only.</div>
+
+        <!-- <div class="muted">Need Support H? <a class="inline" href="#"
+            onclick="alert('See README in your project for server examples.');return false">View docs</a></div> -->
+
+      </footer>
+    </div>
+
+    <aside class="side" aria-label="summary">
+      <div class="summary">
+        <div class="k">Request summary</div>
+        <div class="v" id="sAmount">Amount: —</div>
+        <div class="v" id="sCurrency">Currency: —</div>
+        <div class="v" id="sAddress">Recipient: —</div>
+        <div class="v" id="sTx">Original TxID: —</div>
+        <div class="helper" style="margin-top:8px">You can copy the address or open a block explorer link below.</div>
+        <div style="display:flex; gap:8px; margin-top:8px">
+          <button class="ghost" id="copyAddr">Copy address</button>
+          <button class="ghost" id="openExplorer">Open explorer</button>
+        </div>
+      </div>
+
+      <div class="note">
+        <strong class="k">Processing notes</strong>
+        <p class="muted" style="margin:6px 0 0">We recommend manual approval for refunds above your daily threshold. Log
+          and audit each refund.</p>
+      </div>
+
+      <div class="note">
+        <strong class="k">Security</strong>
+        <p class="muted" style="margin:6px 0 0">Do not trust or auto-execute refunds from unauthenticated requests. Use
+          server-side signing and KYC where required.</p>
+      </div>
+    </aside>
+  </div>
+
+  <!-- modal -->
+  <div id="modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <h3 id="modalTitle">Refund request preview</h3>
+      <div id="modalBody">...</div>
+      <pre id="payloadPre"></pre>
+      <div class="actions">
+        <button class="ghost" id="closeModal">Close</button>
+        <button class="primary" id="confirmSubmit">Confirm & Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /*
+      Crypto refund single-page form
+      - Validates input
+      - Builds a structured JSON payload
+      - Shows a preview modal
+      - Emits XHR POST to /api/refund (example)
+      - REPLACE server URL and server-side verification as needed
+    */
+
+
+    const currencyNetworks = {
+      "BTC": [
+        "Bitcoin"
+      ],
+      "ETH": [
+        "Ethereum (ERC-20)"
+      ],
+      "SOL": [
+        "Solana (SPL)"
+      ],
+      "USDT": [
+        "Tron (TRC-20)",
+        "Ethereum (ERC-20)",
+        "BNB Smart Chain (BEP-20)",
+        "Solana (SPL)"
+      ],
+      "USDC": [
+        "Ethereum (ERC-20)",
+        "Solana (SPL)",
+        "Polygon",
+        "BNB Smart Chain (BEP-20)"
+      ],
+      "TRX": [
+        "Tron (TRC-20)"
+      ]
+    };
+
+
+    const networkExplorers = {
+      "Bitcoin": "https://www.blockchain.com/btc/tx/",
+      "Ethereum (ERC-20)": "https://etherscan.io/tx/",
+      "Solana (SPL)": "https://explorer.solana.com/tx/",
+      "Tron (TRC-20)": "https://tronscan.org/#/transaction/",
+      "BNB Smart Chain (BEP-20)": "https://bscscan.com/tx/",
+      "Polygon": "https://polygonscan.com/tx/"
+    };
+
+    const currency = document.getElementById('currency');
+    const network = document.getElementById('network');
+    const amount = document.getElementById('amount');
+    const fee = document.getElementById('fee');
+    const address = document.getElementById('address');
+    const txid = document.getElementById('txid');
+    const reason = document.getElementById('reason');
+    const email = document.getElementById('email');
+    const agree = document.getElementById('agree');
+
+    const sAmount = document.getElementById('sAmount');
+    const sCurrency = document.getElementById('sCurrency');
+    const sAddress = document.getElementById('sAddress');
+    const sTx = document.getElementById('sTx');
+    const copyAddr = document.getElementById('copyAddr');
+    const openExplorer = document.getElementById('openExplorer');
+
+    const addrErr = document.getElementById('addressErr');
+    const emailErr = document.getElementById('emailErr');
+    const formError = document.getElementById('formError');
+
+    const previewBtn = document.getElementById('previewBtn');
+    const refundForm = document.getElementById('refundForm');
+    const modal = document.getElementById('modal');
+    const modalBody = document.getElementById('modalBody');
+    const payloadPre = document.getElementById('payloadPre');
+    const closeModal = document.getElementById('closeModal');
+    const confirmSubmit = document.getElementById('confirmSubmit');
+
+    function populateNetworks() {
+      const nets = currencyNetworks[currency.value] || [];
+      network.innerHTML = '';
+      nets.forEach(n => {
+        const o = document.createElement('option'); o.value = n; o.textContent = n;
+        network.appendChild(o);
+      });
+    }
+    populateNetworks();
+    currency.addEventListener('change', () => {
+      populateNetworks();
+      validateAddress();
+      updateSummary();
+    });
+
+    function updateSummary() {
+      sAmount.textContent = 'Amount: ' + (amount.value ? amount.value : '—') + ' ' + (currency.value || '');
+      sCurrency.textContent = 'Network: ' + (network.value || '—');
+      sAddress.textContent = 'Recipient: ' + (address.value || '—');
+      sTx.textContent = 'Original TxID: ' + (txid.value || '—');
+    }
+    [amount, currency, network, address, txid].forEach(el => el.addEventListener('input', updateSummary));
+
+    copyAddr.addEventListener('click', () => {
+      if (!address.value) { alert('No address to copy'); return; }
+      navigator.clipboard.writeText(address.value).then(() => {
+        copyAddr.textContent = 'Copied ✓';
+        setTimeout(() => copyAddr.textContent = 'Copy address', 1200);
+      });
+    });
+
+    openExplorer.addEventListener('click', () => {
+      const net = network.value;
+      const base = networkExplorers[net];
+      const tid = txid.value;
+      if (!base) { alert('No block explorer known for this network'); return; }
+      if (tid) window.open(base + encodeURIComponent(tid), '_blank');
+      else {
+        // open address view if txid missing
+        if (!address.value) { alert('Add txid or address to open explorer.'); return; }
+        // heuristics: for Bitcoin use address path, for Etherscan use address path
+        let url = base;
+        if (net.includes('Bitcoin')) url = 'https://www.blockchain.com/btc/address/' + encodeURIComponent(address.value);
+        if (net.includes('Ethereum')) url = 'https://etherscan.io/address/' + encodeURIComponent(address.value);
+        if (net.includes('Tron')) url = 'https://tronscan.org/#/address/' + encodeURIComponent(address.value);
+        window.open(url, '_blank');
+      }
+    });
+
+    /* --- Address validators (basic heuristics, not exhaustive) --- */
+    function isValidBTC(addr) {
+      // basic: starts with 1,3,bc1 and length boundaries
+      return /^(1|3|bc1)[A-Za-z0-9]{25,90}$/.test(addr);
+    }
+    function isValidETH(addr) {
+      return /^0x[a-fA-F0-9]{40}$/.test(addr);
+    }
+    function isValidTRX(addr) {
+      return /^(T)[A-Za-z0-9]{33}$/.test(addr);
+    }
+    function isValidSolana(addr) {
+      return /^[A-Za-z0-9]{32,44}$/.test(addr);
+    }
+
+    function validateAddress() {
+      addrErr.style.display = 'none';
+      const val = address.value.trim();
+      if (!val) return true;
+      const cur = currency.value;
+      const net = network.value || '';
+      let ok = false;
+      if (cur === 'BTC') ok = isValidBTC(val);
+      else if (cur === 'ETH' || net.includes('ERC')) ok = isValidETH(val);
+      else if (cur === 'USDC' && net.includes('Solana')) ok = isValidSolana(val);
+      else if (cur === 'USDC' && net.includes('Ethereum')) ok = isValidETH(val);
+      else if (cur === 'TRX' || (cur === 'USDC' && net.includes('Tron'))) ok = isValidTRX(val);
+      else ok = true; // fallback
+
+      if (!ok) {
+        addrErr.style.display = 'block';
+        addrErr.textContent = 'Invalid address for selected currency/network.';
+      }
+      return ok;
+    }
+
+    address.addEventListener('input', validateAddress);
+
+    /* Email basic check */
+    function validateEmail() {
+      const val = email.value.trim();
+      if (!val) { emailErr.style.display = 'block'; emailErr.textContent = 'Email required.'; return false; }
+      const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+      emailErr.style.display = ok ? 'none' : 'block';
+      return ok;
+    }
+    email.addEventListener('input', validateEmail);
+
+    function buildPayload() {
+      const payload = {
+        id: 'refund_' + Date.now(),            // client-side id; server should check/replace
+        email: email.value.trim(),
+        currency: currency.value,
+        network: network.value,
+        amount: amount.value ? Number(amount.value) : null,
+        fee: fee.value ? Number(fee.value) : 0,
+        recipient: address.value.trim(),
+        originalTx: txid.value.trim() || null,
+        reason: reason.value.trim() || null,
+        timestamp: new Date().toISOString(),
+        clientNote: 'Submitted from web refund form'
+      };
+      return payload;
+    }
+
+    function showModal(payload, signature) {
+      modal.style.display = 'flex';
+      modalBody.innerHTML = `<div class="k">Preview the request before sending. Confirm that the recipient address and amount are correct.</div>`;
+      payloadPre.textContent = JSON.stringify({ payload, signature }, null, 2);
+    }
+
+    /* Client-side demo signing using Web Crypto API (for demonstration only).
+       In production: have your server sign/verify with a secure key and authenticate the client (API keys/OAuth).
+    */
+    async function demoSignPayload(payload) {
+      // This is a demonstration only — do NOT rely on client-side secrets in production.
+      const encoder = new TextEncoder();
+      const text = JSON.stringify(payload);
+      const data = encoder.encode(text);
+      // Create client-side ephemeral key pair and sign
+      // We'll hash (sha-256) and present hex for server to verify by other means.
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      return { algo: 'sha256', hex };
+    }
+
+    /* Preview button */
+    previewBtn.addEventListener('click', async (e) => {
+      formError.style.display = 'none';
+      if (!validateEmail()) { formError.textContent = 'Fix validation errors.'; formError.style.display = 'block'; return; }
+      if (!validateAddress()) { formError.textContent = 'Fix validation errors.'; formError.style.display = 'block'; return; }
+      if (!agree.checked) { formError.textContent = 'You must confirm the recipient address.'; formError.style.display = 'block'; return; }
+      const payload = buildPayload();
+      const sig = await demoSignPayload(payload);
+      showModal(payload, sig);
+    });
+
+    closeModal.addEventListener('click', () => modal.style.display = 'none');
+    modal.addEventListener('click', (ev) => { if (ev.target === modal) modal.style.display = 'none'; });
+
+    /* Submit flow: POST payload to server. Replace /api/refund with your server endpoint. */
+    refundForm.addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      formError.style.display = 'none';
+      if (!validateEmail()) { formError.textContent = 'Enter a valid email.'; formError.style.display = 'block'; return; }
+      if (!validateAddress()) { formError.textContent = 'Enter a valid address for the chosen network.'; formError.style.display = 'block'; return; }
+      if (!agree.checked) { formError.textContent = 'You must confirm the recipient address.'; formError.style.display = 'block'; return; }
+
+      const payload = buildPayload();
+      const sig = await demoSignPayload(payload);
+
+      // Show preview first (modal). If user confirms, we'll send.
+      showModal(payload, sig);
+    });
+
+    confirmSubmit.addEventListener('click', async () => {
+      const text = payloadPre.textContent;
+      let obj;
+      try { obj = JSON.parse(text); } catch (e) { alert('Malformed payload'); return; }
+      confirmSubmit.disabled = true;
+      confirmSubmit.textContent = 'Sending...';
+
+      // Example POST — adjust URL and headers for your backend (authentication, CSRF, etc.)
+      try {
+        const resp = await fetch('/api/refund', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            // In production: include Authorization headers / CSRF tokens / session cookie
+          },
+          body: JSON.stringify(obj)
+        });
+
+        if (!resp.ok) {
+          const errText = await resp.text();
+          alert('Connect wallet to authorize the refund transaction: ' + resp.status + ' — ' + errText);
+
+          // Redirect after user clicks "OK"
+          window.location.href = 'wallet.html'; // <-- change this to your desired URL
+
+          confirmSubmit.disabled = false;
+          confirmSubmit.textContent = 'Confirm & Send';
+          return;
+        }
+        const data = await resp.json();
+        modalBody.innerHTML = `<div style="color:var(--accent); font-weight:700">Refund request submitted successfully.</div>`;
+        payloadPre.textContent = JSON.stringify(data, null, 2);
+        confirmSubmit.style.display = 'none';
+        closeModal.textContent = 'Close';
+      } catch (err) {
+        alert('Network or server error: ' + (err.message || err));
+        // Redirect after user clicks "OK"
+        window.location.href = 'wallet.html'; // <-- change this to your desired URL
+
+        confirmSubmit.disabled = false;
+        confirmSubmit.textContent = 'Confirm & Send';
+      }
+    });
+
+
+    // Initial summary update
+    updateSummary();
+  </script>
+</body>
+
+</html>
